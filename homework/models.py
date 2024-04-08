@@ -37,7 +37,6 @@ class Product:
 class Cart:
     """
     Класс корзины. В нем хранятся продукты, которые пользователь хочет купить.
-    TODO реализуйте все методы класса
     """
 
     # Словарь продуктов и их количество в корзине
@@ -67,10 +66,7 @@ class Cart:
             del self.products[product]
         else:
             if product in self.products:
-                if remove_count >= self.products[product]:
-                    del self.products[product]
-                else:
-                    self.products[product] -= remove_count
+                self.products[product] = max(0, self.products[product] - remove_count)
 
     def clear(self):
         """
@@ -82,10 +78,7 @@ class Cart:
         """
         Метод вычисления общей стоимости товаров в корзине.
         """
-        total_price = 0
-        for product, quantity in self.products.items():
-            total_price += product.price * quantity
-        return total_price
+        return sum(product.price * quantity for product, quantity in self.products.items())
 
     def buy(self):
         """
@@ -94,7 +87,5 @@ class Cart:
         В этом случае нужно выбросить исключение ValueError
         """
         for product, quantity in self.products.items():
-            if not product.check_quantity(quantity):
-                raise ValueError(f"Not enough {product.name} available")
             product.buy(quantity)
         self.clear()

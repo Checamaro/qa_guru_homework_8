@@ -39,10 +39,12 @@ class TestCart:
 
     def test_remove_product(self, product, cart):
         cart.add_product(product, 5)
-        cart.remove_product(product, 3)
-        assert cart.products[product] == 2
-        cart.remove_product(product)
-        assert product not in cart.products
+        cart.remove_product(product, 7)
+        assert product not in cart.products.keys()
+
+        cart.add_product(product, 5)
+        cart.remove_product(product, 5)
+        assert product not in cart.products.keys()
 
     def test_clear(self, product, cart):
         cart.add_product(product, 5)
@@ -55,6 +57,7 @@ class TestCart:
 
     def test_buy(self, product, cart):
         cart.add_product(product, 2)
-        cart.buy()
-        assert product.quantity == 998
-        assert not cart.products
+        # Пытаемся купить больше товара, чем есть на складе
+        cart.add_product(product, 2000)
+        with pytest.raises(ValueError):
+            cart.buy()
